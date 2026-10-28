@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Content Security Policy: strictly prevents any external resource loading -->
+    <!-- Development/preview relaxation note: 'connect-src ws: wss:' and 'script-src unsafe-inline unsafe-eval' are included for the Vite dev runtime and dev server communication. In production, fonts and assets are strictly self-hosted. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' blob: data:; connect-src 'self' ws: wss:;" />
+    
+    <script>
+      /**
+       * Safeguard for browser extension / sandbox interceptors attempting to overwrite `window.fetch`.
+       * In certain sandbox or extension environments, window.fetch is configured as a getter-only property.
+       * Attempting to assign `window.fetch = interceptor` throws an uncaught TypeError: "Cannot set property fetch of #<Window> which has only a getter".
+       * By defining fetch with both getter and setter before extensions or host scripts run, we ensure compatibility without compromising privacy.
+       * Kavach itself never makes any remote fetch or network requests.
+       */
+      (function() {
+        try {
+          var _f = window.fetch;
+          Object.defineProperty(window, 'fetch', {
+            get: function() { return _f; },
+            set: function(v) { _f = v; },
+            configurable: true,
+            enumerable: true
+          });
+        } catch (_) {}
+      })();
+    </script>
+    <title>Kavach - Cyber-Abuse Response & Reporting Companion</title>
+    <meta name="description" content="Privacy-first cyber-abuse response and reporting companion for women in India. Features in-browser evidence hashing, first-hour safety playbooks, complaint drafting, and incident tracking." />
+    <meta property="og:title" content="Kavach - Cyber-Abuse Response & Reporting Companion" />
+    <meta property="og:description" content="Privacy-first cyber-abuse response and reporting companion for women in India. Features in-browser evidence hashing, first-hour safety playbooks, complaint drafting, and incident tracking." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
